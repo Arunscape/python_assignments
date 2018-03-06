@@ -293,8 +293,27 @@ class Compiler():
             # The rhs needs to be output to the code list, and
             # the lhs appears as a name in the current expresion being built.
 
-            # NOT IMPLEMENTED
+
             code_str = ""
+            name =children[0].get_value()
+
+            #get value to assign
+            val =self.compile_ast(children[1],var_dict,code)
+            
+            #get position in code list
+            pos= var_dict.get(name,0)
+            #increment each time
+            var_dict[name]=pos+1
+
+            #update name
+            name=self.make_gen_name(name,var_dict[name])
+
+            #add code
+            # code += '{}={}'.format(name,val) #doesn't play nice with lists
+            code.append('{} = {}'.format(name,val))
+
+            #finally, generate python code
+            code_str += str(name)
 
         elif ntype == 'apply':
             # Attempt to unparse the AST into something that python can understand.
@@ -302,11 +321,33 @@ class Compiler():
             # and sqr() have 2 children, and anything else looks like a function call.
             op = children[0].get_value()
 
-            # NOT IMPLEMENTED
-            code_str = "{}".format(op).join(self.compile_ast(c, var_dict) for c in children[1:] )
+            code_str = ""
+            if op in {'+','-','/','*'}:
+                leftval = self.compile_ast(children[1],var_dict,code)
+                rightval= self.compile_ast(children[2],var_dict,code)
+
+                #          (2  +  2)
+                #          (l  op r)
+                code_str= '({} {} {})'.format(leftval,op,rightval)
+
+
+            elif op == 'sqr':
+                #x^2 = x**2
+                code_str= '({} ** 2)'.format(self.compile_ast(children[1], var_dict,code))
+
+            elif op == 'neg':
+                #neg(x)=-x
+                code_str= '(-{})'.format(self.compile_ast(children[1], var_dict,code))
+
+            else:
+                #treat like function = op(args)
+
+                #children[1:] contains the args but those are valuetree objects,
+                #so compile again to get strings
+                args=[self.compile_ast(c,var_dict) for c in children[1:]]
+                code_str+= '{}({})'.format(op,','.join(args))
 
         else:
-
             # anything else, seriously wrong state.
             raise ValueError(
                 "Evaluation internal error, AST node type '{}' not implemented".
