@@ -1,5 +1,5 @@
 """
-Arun Woosaree 1514457
+Arun Woosaree
 Implements the Bellman-Ford algorithim with Graph potentials
 
 Doctests:
