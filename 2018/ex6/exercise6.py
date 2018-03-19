@@ -200,16 +200,20 @@ def climbing(heights, rest, limit):
 
     #use burst checking function in a binary search to find min malue
     low =1
-    while low < limit:
-        mid = int((low+limit)/2)
-        print(mid, checkburst(mid))
+    high=limit
+    while high-low-1: #there will be a difference of 1 when this finishes
+        # print(high, low)
+        mid = int((low+high)/2)
+        # print(mid, checkburst(mid))
         if checkburst(mid):
             #if the average works, there maybe exists a smaller value which works
-            limit = mid
+            high = mid
         else:
             #if not, the lowest value that works should be higher
             low=mid
-    return limit
-    # for i in range(1,limit+1):
-    #     print(i,checkburst(i))
-    # print(checkburst(104))
+    return high
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
