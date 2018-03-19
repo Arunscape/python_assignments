@@ -26,6 +26,16 @@ def findValley(heights):
 
     findValley([11, 2, 11, 12])
     1
+
+    The function findValley() should run in O(log(n)) time where n is the size
+    of the list (hint: divide and conquer, i.e., what underlies merge sort and
+    many other recursive algorithms).
+
+    Trivial solutions that run linear time will not receive any marks.
+
+    Warning: if your code performs a list slice (something like l[:k] or l[k:])
+    then it is probably taking linear time! In particular, list slice
+    unfortunately makes a full copy of the sliced portion of the list.
     """
 
     #divide and conquer
@@ -70,6 +80,7 @@ def findValley(heights):
         #print()
     #if it gets here, something went horribly wrong
     return -1
+
 def climbing(heights, rest, limit):
     """
     Assumption: 'heights' is a nonempty list of positive integers that are
@@ -132,6 +143,73 @@ def climbing(heights, rest, limit):
 
     But if you can only climb for 49 seconds consecutively then you can't even
     reach the first ledge!
+
+    For full marks, the function climbing() should run in O(n * log(limit))
+    time where limit is the last parameter of the function and n is the length
+    of the list.
+    (hint: can you at least check if a proposed value for the value of 'burst'
+    is sufficient to reach the top in the given time limit?)
     """
 
-    pass
+    #check if a proposed value for burst is sufficient to reach the top in the given time limit
+    def checkburst(burst):
+        """
+        subfunction which determines if a given value is a valid burst length
+        to climb the cliff. Runs in O(n) time, worst case scenario, and
+        also on average, I'd say. Sometimes it exits early if time > limit
+        before the climbing simulation ends.
+        """
+        nonlocal heights, rest, limit
+
+        #see if you can climb to first ledge
+        if heights[0] > burst: return False
+
+        time = heights[0]
+        b= burst - time #first climb takes time off burst
+
+        def climb(climbtime):
+            """
+            subsubfunction to simulate climbing
+            """
+            nonlocal b, time
+            if climbtime > b:
+                #need to rest before next burst
+                #resting means you have a full burst available0
+                b=burst
+                time += rest
+                # print('resting...')
+
+            #can climb another ledge
+            b -= climbtime
+            time += climbtime
+
+        for i in range(len(heights)-1):
+
+            climbtime = heights[i+1]- heights[i]
+            # print('ledge: {}, time: {} burstleft: {} climbtime(next ledge): {}'.format(heights[i],time,b,climbtime))
+
+            #takes longer than the limit, quit early
+            if time > limit: return False
+
+            #climb the ledge, climbtime is calculated above, and climb is
+            # a function defined above
+            climb(climbtime)
+
+        #the way this is set up, it already climbs up to the last ledge if possible
+        return False if time > limit else True
+
+    #use burst checking function in a binary search to find min malue
+    low =1
+    while low < limit:
+        mid = int((low+limit)/2)
+        print(mid, checkburst(mid))
+        if checkburst(mid):
+            #if the average works, there maybe exists a smaller value which works
+            limit = mid
+        else:
+            #if not, the lowest value that works should be higher
+            low=mid
+    return limit
+    # for i in range(1,limit+1):
+    #     print(i,checkburst(i))
+    # print(checkburst(104))

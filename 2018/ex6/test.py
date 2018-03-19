@@ -39,10 +39,13 @@
 """
 
 if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+    # import doctest
+    # doctest.testmod()
     from exercise6 import *
     # print(findValley([10, 7, 4, 1, 3, 6]))
     # print(findValley([3, 2, 1]))
     # print(findValley([9, 14]))
     # print(findValley([5, 6, 1, 2, 3, 4]))
+    print( climbing([30, 70, 95, 120, 145, 190], 10, 210) )
+    # print(climbing([50, 100], 1, 100))
+    # print(climbing([50, 99], 1, 100))
