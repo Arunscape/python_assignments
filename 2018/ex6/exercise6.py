@@ -1,4 +1,4 @@
-#Arun Woosaree 1514457
+# Arun Woosaree
 """
 >>> from exercise6 import *
 >>> findValley([10, 7, 4, 1, 3, 6])
@@ -40,6 +40,8 @@
 >>> climbing([35, 77, 92, 103, 107, 115, 123, 124, 142, 153, 155, 163, 167,174, 180, 189, 190, 196, 201, 205, 208, 220, 226, 244, 247, 250, 254, 259, 273,274, 286, 297, 311, 312, 322, 323, 326, 329, 352, 376, 379, 385, 402, 407, 418,420, 428, 453, 459, 460, 499, 501, 504, 506, 509, 524, 532, 535, 537, 561, 567,579, 590, 597, 600, 611, 616, 643, 647, 672, 686, 692, 705, 711, 720, 724, 749,753, 773, 775, 776, 795, 802, 818, 819, 823, 827, 832, 839, 840, 850, 859, 874,880, 889, 910, 921, 947, 948, 958], 21, 9001)
 42
 """
+
+
 def findValley(heights):
     """
     Assumption: 'heights' is a nonempty list of integers with the guarantee
@@ -81,46 +83,47 @@ def findValley(heights):
 
     #divide and conquer
     start, num = 0, len(heights)
-    #start is the starting index to search
-    #num is the length of the list remaining to search
+    # start is the starting index to search
+    # num is the length of the list remaining to search
 
-    while num> 0:
-        #if there's only one element, then we already have the index of it, which is 0
-        if num ==1:
+    while num > 0:
+        # if there's only one element, then we already have the index of it, which is 0
+        if num == 1:
             #print('one element')
             return start
 
-        #if there's 2 elements, we can simply return the lower one
-        if num ==2:
+        # if there's 2 elements, we can simply return the lower one
+        if num == 2:
             #print('2 elements')
-            return start if heights[0] < heights[1] else start+1
+            return start if heights[0] < heights[1] else start + 1
 
         # 3 or more elements:
-        mid=int(num/2)
-        val = heights[start+mid]
-        #print(*heights[start:start+num])
+        mid = int(num / 2)
+        val = heights[start + mid]
+        # print(*heights[start:start+num])
         #print('num: {}'.format(num))
         #print('start: {} | mid: {} | end: {}'.format(start, mid, start+num-1))
 
-        #the val is the only element where it is less than the
-        #number on the right and the left if there are 3 or more elements
-        if val < heights[start+mid-1] and val < heights[start+mid+1]:
-            return start+mid
+        # the val is the only element where it is less than the
+        # number on the right and the left if there are 3 or more elements
+        if val < heights[start + mid - 1] and val < heights[start + mid + 1]:
+            return start + mid
 
-        elif val < heights[start+mid-1]:
-            #search from this point onwards, valley is to the right
+        elif val < heights[start + mid - 1]:
+            # search from this point onwards, valley is to the right
             #print('searching right')
             start += mid
             num -= mid
 
         else:
-            #search from start to before this point, valley is to the left
+            # search from start to before this point, valley is to the left
             #print('searching left')
-            num = mid#-start
+            num = mid  # -start
 
-        #print()
-    #if it gets here, something went horribly wrong
+        # print()
+    # if it gets here, something went horribly wrong
     return -1
+
 
 def climbing(heights, rest, limit):
     """
@@ -192,7 +195,7 @@ def climbing(heights, rest, limit):
     is sufficient to reach the top in the given time limit?)
     """
 
-    #check if a proposed value for burst is sufficient to reach the top in the given time limit
+    # check if a proposed value for burst is sufficient to reach the top in the given time limit
     def checkburst(burst):
         """
         subfunction which determines if a given value is a valid burst length
@@ -202,11 +205,12 @@ def climbing(heights, rest, limit):
         """
         nonlocal heights, rest, limit
 
-        #see if you can climb to first ledge
-        if heights[0] > burst: return False
+        # see if you can climb to first ledge
+        if heights[0] > burst:
+            return False
 
         time = heights[0]
-        b= burst - time #first climb takes time off burst
+        b = burst - time  # first climb takes time off burst
 
         def climb(climbtime):
             """
@@ -214,46 +218,48 @@ def climbing(heights, rest, limit):
             """
             nonlocal b, time
             if climbtime > b:
-                #need to rest before next burst
-                #resting means you have a full burst available0
-                b=burst
+                # need to rest before next burst
+                # resting means you have a full burst available0
+                b = burst
                 time += rest
                 # print('resting...')
 
-            #can climb another ledge
+            # can climb another ledge
             b -= climbtime
             time += climbtime
 
-        for i in range(len(heights)-1):
+        for i in range(len(heights) - 1):
 
-            climbtime = heights[i+1]- heights[i]
+            climbtime = heights[i + 1] - heights[i]
             # print('ledge: {}, time: {} burstleft: {} climbtime(next ledge): {}'.format(heights[i],time,b,climbtime))
 
-            #if climbtime > burst, can't climb
-            if climbtime > burst: return False
+            # if climbtime > burst, can't climb
+            if climbtime > burst:
+                return False
 
-            #takes longer than the limit, quit early
-            if time > limit: return False
+            # takes longer than the limit, quit early
+            if time > limit:
+                return False
 
-            #climb the ledge, climbtime is calculated above, and climb is
+            # climb the ledge, climbtime is calculated above, and climb is
             # a function defined above
             climb(climbtime)
-        #the way this is set up, it already climbs up to the last ledge if possible
+        # the way this is set up, it already climbs up to the last ledge if possible
         return False if time > limit else True
 
-    #use burst checking function in a binary search to find min malue
-    low =0
-    high=limit
-    while high-low-1: #there will be a difference of 1 when this finishes
+    # use burst checking function in a binary search to find min malue
+    low = 0
+    high = limit
+    while high - low - 1:  # there will be a difference of 1 when this finishes
         # print(high, low)
-        mid = int((low+high)/2)
+        mid = int((low + high) / 2)
         # print(mid, checkburst(mid))
         if checkburst(mid):
-            #if the average works, there maybe exists a smaller value which works
+            # if the average works, there maybe exists a smaller value which works
             high = mid
         else:
-            #if not, the lowest value that works should be higher
-            low=mid
+            # if not, the lowest value that works should be higher
+            low = mid
     return high
 
 
